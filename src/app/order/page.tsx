@@ -24,8 +24,8 @@ const INIT: State = {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="bg-zinc-900 rounded-2xl p-4">
-      <h2 className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-3">{title}</h2>
+    <section className="bg-white border border-violet-200 rounded-2xl p-4">
+      <h2 className="text-[.68rem] font-bold text-[#7C6F9F] uppercase tracking-widest mb-3">{title}</h2>
       {children}
     </section>
   );
@@ -108,17 +108,19 @@ export default function OrderPage() {
     }
   }
 
-  const chip = (active: boolean) =>
-    `rounded-xl border-2 p-3 flex items-center gap-2 transition-all cursor-pointer select-none ${
-      active ? 'border-purple-500 bg-purple-950 text-white' : 'border-zinc-700 bg-zinc-800 text-zinc-300'
+  const chipClass = (active: boolean) =>
+    `rounded-xl border-2 p-3 flex items-center gap-2 transition-all cursor-pointer select-none font-medium text-sm ${
+      active
+        ? 'border-violet-600 bg-violet-100 text-violet-800'
+        : 'border-violet-200 bg-white text-[#1E1B2E]'
     }`;
 
   return (
-    <div className="min-h-screen bg-zinc-950 pb-48">
+    <div className="min-h-screen bg-violet-50 pb-52">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-zinc-950/90 backdrop-blur border-b border-zinc-800 px-4 py-3 flex items-center gap-3">
-        <Link href="/" className="text-zinc-400 hover:text-white text-xl">←</Link>
-        <h1 className="font-bold text-white text-lg">สั่งไอศกรีม</h1>
+      <header className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-violet-200 px-4 py-3 flex items-center gap-3">
+        <Link href="/" className="text-[#7C6F9F] hover:text-violet-700 text-xl leading-none">←</Link>
+        <h1 className="font-bold text-violet-800 text-lg">สั่งไอศกรีม</h1>
       </header>
 
       <div className="max-w-md mx-auto p-4 flex flex-col gap-4">
@@ -132,18 +134,18 @@ export default function OrderPage() {
                 onClick={() => setSize(sz.id)}
                 className={`rounded-2xl border-2 p-4 text-left transition-all ${
                   s.sizeId === sz.id
-                    ? 'border-purple-500 bg-purple-950'
-                    : 'border-zinc-700 bg-zinc-800'
+                    ? 'border-violet-600 bg-violet-100'
+                    : 'border-violet-200 bg-white'
                 }`}
               >
-                <div className="text-2xl font-black text-white">{sz.label}</div>
-                <div className="text-purple-300 font-bold text-lg">{sz.price}฿</div>
-                <div className="text-zinc-400 text-xs mt-1">{sz.scoops} Scoops</div>
-                <div className="text-zinc-400 text-xs">
+                <div className="text-2xl font-black text-violet-800">{sz.label}</div>
+                <div className="text-violet-600 font-bold text-lg">{sz.price}฿</div>
+                <div className="text-[#7C6F9F] text-xs mt-1">{sz.scoops} Scoops</div>
+                <div className="text-[#7C6F9F] text-xs">
                   {sz.maxFlavor === 1 ? '1 รส' : `สูงสุด ${sz.maxFlavor} รส`}
                 </div>
                 {sz.freeTops > 0 && (
-                  <div className="text-green-400 text-xs">ฟรีท็อปปิ้ง 1 อย่าง</div>
+                  <div className="text-green-600 text-xs font-semibold mt-0.5">ฟรีท็อปปิ้ง 1 อย่าง</div>
                 )}
               </button>
             ))}
@@ -153,7 +155,7 @@ export default function OrderPage() {
         {/* Flavor */}
         <Section title={`รสชาติ${sz ? ` (เลือกได้ ${sz.maxFlavor} รส)` : ''}`}>
           {!s.sizeId ? (
-            <p className="text-zinc-500 text-sm">เลือกขนาดก่อน</p>
+            <p className="text-[#7C6F9F] text-sm">เลือกขนาดก่อน</p>
           ) : (
             <div className="flex flex-col gap-2">
               {FLAVORS.map(f => {
@@ -164,11 +166,11 @@ export default function OrderPage() {
                     key={f.id}
                     onClick={() => toggleFlavor(f.id)}
                     disabled={disabled}
-                    className={`${chip(active)} ${disabled ? 'opacity-40' : ''}`}
+                    className={`${chipClass(active)} ${disabled ? 'opacity-40' : ''}`}
                   >
                     <span className="text-xl">{f.emoji}</span>
-                    <span className="font-medium">{f.label}</span>
-                    {active && <span className="ml-auto text-purple-400">✓</span>}
+                    <span>{f.label}</span>
+                    {active && <span className="ml-auto text-violet-600 font-bold">✓</span>}
                   </button>
                 );
               })}
@@ -181,22 +183,21 @@ export default function OrderPage() {
           <div className="flex flex-col gap-2">
             {TOPPINGS.map((t, i) => {
               const active = s.toppings.includes(t.id);
-              const freeSlot = sz && sz.freeTops > 0 && i < sz.freeTops && active;
               const posInTops = s.toppings.indexOf(t.id);
               const isFree = active && sz && posInTops < sz.freeTops;
               return (
                 <button
                   key={t.id}
                   onClick={() => toggleTopping(t.id)}
-                  className={chip(active)}
+                  className={chipClass(active)}
                 >
                   <span className="text-xl">{t.emoji}</span>
-                  <span className="font-medium">{t.label}</span>
+                  <span>{t.label}</span>
                   {active && isFree && (
-                    <span className="ml-auto text-green-400 text-xs font-bold">ฟรี</span>
+                    <span className="ml-auto text-green-600 text-xs font-bold">ฟรี</span>
                   )}
                   {active && !isFree && (
-                    <span className="ml-auto text-purple-400 text-xs">+5฿</span>
+                    <span className="ml-auto text-violet-600 text-xs font-semibold">+5฿</span>
                   )}
                 </button>
               );
@@ -213,15 +214,15 @@ export default function OrderPage() {
                 onClick={() => setS(prev => ({ ...prev, zoneIdx: i }))}
                 className={`rounded-xl border-2 p-3 text-left transition-all ${
                   s.zoneIdx === i
-                    ? 'border-purple-500 bg-purple-950'
-                    : 'border-zinc-700 bg-zinc-800'
+                    ? 'border-violet-600 bg-violet-100'
+                    : 'border-violet-200 bg-white'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-purple-300">{z.label}</span>
-                  {s.zoneIdx === i && <span className="text-purple-400 ml-auto">✓</span>}
+                  <span className="font-bold text-violet-700">{z.label}</span>
+                  {s.zoneIdx === i && <span className="text-violet-600 ml-auto font-bold">✓</span>}
                 </div>
-                <div className="text-zinc-400 text-xs mt-1">{z.areas}</div>
+                <div className="text-[#7C6F9F] text-xs mt-1">{z.areas}</div>
               </button>
             ))}
           </div>
@@ -230,81 +231,61 @@ export default function OrderPage() {
         {/* Customer Info */}
         <Section title="ข้อมูลลูกค้า">
           <div className="flex flex-col gap-3">
-            <div>
-              <label className="text-zinc-400 text-xs mb-1 block">ชื่อ *</label>
-              <input
-                type="text"
-                value={s.name}
-                onChange={e => setS(p => ({ ...p, name: e.target.value }))}
-                placeholder="ชื่อลูกค้า"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500"
-              />
-            </div>
-            <div>
-              <label className="text-zinc-400 text-xs mb-1 block">เบอร์โทร</label>
-              <input
-                type="tel"
-                value={s.phone}
-                onChange={e => setS(p => ({ ...p, phone: e.target.value }))}
-                placeholder="08xxxxxxxx"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500"
-              />
-            </div>
-            <div>
-              <label className="text-zinc-400 text-xs mb-1 block">ที่อยู่จัดส่ง *</label>
-              <input
-                type="text"
-                value={s.address}
-                onChange={e => setS(p => ({ ...p, address: e.target.value }))}
-                placeholder="บ้านเลขที่ / ซอย / ตึก"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500"
-              />
-            </div>
-            <div>
-              <label className="text-zinc-400 text-xs mb-1 block">โน้ต</label>
-              <input
-                type="text"
-                value={s.note}
-                onChange={e => setS(p => ({ ...p, note: e.target.value }))}
-                placeholder="หมายเหตุเพิ่มเติม"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500"
-              />
-            </div>
+            {[
+              { key: 'name',    label: 'ชื่อ *',         type: 'text', ph: 'ชื่อลูกค้า' },
+              { key: 'phone',   label: 'เบอร์โทร',       type: 'tel',  ph: '08xxxxxxxx' },
+              { key: 'address', label: 'ที่อยู่จัดส่ง *', type: 'text', ph: 'บ้านเลขที่ / ซอย / ตึก' },
+              { key: 'note',    label: 'โน้ต',            type: 'text', ph: 'หมายเหตุเพิ่มเติม' },
+            ].map(field => (
+              <div key={field.key}>
+                <label className="block text-[.72rem] font-semibold text-[#7C6F9F] mb-1">{field.label}</label>
+                <input
+                  type={field.type}
+                  value={s[field.key as keyof State] as string}
+                  onChange={e => setS(p => ({ ...p, [field.key]: e.target.value }))}
+                  placeholder={field.ph}
+                  className="w-full border-2 border-violet-200 rounded-xl px-4 py-2.5 text-sm text-[#1E1B2E] placeholder-[#7C6F9F] bg-violet-50 focus:outline-none focus:border-violet-600 focus:bg-white transition-colors"
+                />
+              </div>
+            ))}
           </div>
         </Section>
 
       </div>
 
       {/* Sticky Bottom Summary + Submit */}
-      <div className="fixed bottom-0 left-0 right-0 bg-zinc-900/95 backdrop-blur border-t border-zinc-800 p-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-violet-200 p-4 shadow-[0_-4px_20px_rgba(109,40,217,0.08)]">
         <div className="max-w-md mx-auto">
           {sz && (
-            <div className="flex justify-between text-sm text-zinc-400 mb-1">
-              <span>ไอศกรีม {sz.label} {s.flavors.length > 0 && `(${s.flavors.map(fid => FLAVORS.find(f=>f.id===fid)?.label).join(', ')})`}</span>
+            <div className="flex justify-between text-sm text-[#7C6F9F] mb-1">
+              <span>
+                ไอศกรีม {sz.label}
+                {s.flavors.length > 0 && ` (${s.flavors.map(fid => FLAVORS.find(f => f.id === fid)?.label).join(', ')})`}
+              </span>
               <span>{sz.price}฿</span>
             </div>
           )}
           {extraTops > 0 && (
-            <div className="flex justify-between text-sm text-zinc-400 mb-1">
+            <div className="flex justify-between text-sm text-[#7C6F9F] mb-1">
               <span>ท็อปปิ้งเพิ่ม ×{extraTops}</span>
               <span>+{extraTops * 5}฿</span>
             </div>
           )}
           {s.zoneIdx !== null && (
-            <div className="flex justify-between text-sm text-zinc-400 mb-2">
+            <div className="flex justify-between text-sm text-[#7C6F9F] mb-2">
               <span>ค่าส่ง</span>
               <span>{deliveryFee}฿</span>
             </div>
           )}
-          <div className="flex justify-between font-bold text-white text-lg mb-3">
+          <div className="flex justify-between font-bold text-[#1E1B2E] text-lg mb-3">
             <span>รวม</span>
-            <span>{total}฿</span>
+            <span className="text-violet-700">{total}฿</span>
           </div>
-          {err && <p className="text-red-400 text-sm mb-2 text-center">{err}</p>}
+          {err && <p className="text-red-600 text-sm mb-2 text-center">{err}</p>}
           <button
             onClick={submit}
             disabled={!canOrder || loading}
-            className="w-full bg-purple-600 hover:bg-purple-500 disabled:bg-zinc-700 disabled:text-zinc-500 text-white font-bold text-lg py-4 rounded-2xl transition-colors"
+            className="w-full bg-violet-600 hover:bg-violet-700 disabled:bg-violet-200 disabled:text-[#7C6F9F] text-white font-bold text-lg py-3.5 rounded-2xl transition-colors shadow-sm"
           >
             {loading ? '⏳ กำลังส่ง...' : canOrder ? '✓ สั่งเลย!' : '⚠️ กรอกข้อมูลให้ครบ'}
           </button>

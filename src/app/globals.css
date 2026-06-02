@@ -1,20 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --color-brand:      #9333ea;
-  --color-brand-dark: #7e22ce;
-  --color-surface:    #18181b;
-  --color-card:       #27272a;
-  --color-border:     #3f3f46;
-}
-
 body {
-  background: #0f0f13;
-  color: #f4f4f5;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #F5F3FF;
+  color: #1E1B2E;
+  font-family: 'Noto Sans Thai', sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
-input, textarea {
-  color-scheme: dark;
+input, textarea, select {
+  font-family: 'Noto Sans Thai', sans-serif;
 }
