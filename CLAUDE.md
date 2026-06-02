@@ -33,7 +33,7 @@ docs/
 
 ## GAS URL
 ```
-https://script.google.com/macros/s/AKfycbwolgQGSX47gYFK2biDG3a2j6jV93_cSALtu7V72Ju-5nKS2C9cl1rO36ZZaIlX5aEyLg/exec
+https://script.google.com/macros/s/AKfycbzNM4I-1rSyDFTRtigO08DXn64Ii6t1fZMGJiPE8yQoAZoHsJetlgYeHIU_XdmYqWRhgA/exec
 ```
 อยู่ใน `src/lib/config.ts` ตัวแปร `GAS_URL`
 
