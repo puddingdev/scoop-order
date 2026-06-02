@@ -31,8 +31,22 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
+const CUSTOMER_KEY = 'scoop_customer';
+
+function loadSavedCustomer(): Partial<State> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem(CUSTOMER_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+function saveCustomer(s: State) {
+  localStorage.setItem(CUSTOMER_KEY, JSON.stringify({ name: s.name, phone: s.phone, address: s.address }));
+}
+
 export default function OrderPage() {
-  const [s, setS] = useState<State>(INIT);
+  const [s, setS] = useState<State>(() => ({ ...INIT, ...loadSavedCustomer() }));
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState('');
   const router = useRouter();
@@ -96,6 +110,7 @@ export default function OrderPage() {
       };
       const res = await createOrder(payload);
       if (res.success && res.order_no) {
+        saveCustomer(s);
         router.push(`/order/${res.order_no}`);
       } else {
         setErr(res.error || 'เกิดข้อผิดพลาด กรุณาลองใหม่');
