@@ -232,13 +232,20 @@ export default function OrderPage() {
         <Section title="ข้อมูลลูกค้า">
           <div className="flex flex-col gap-3">
             {[
-              { key: 'name',    label: 'ชื่อ *',         type: 'text', ph: 'ชื่อลูกค้า' },
-              { key: 'phone',   label: 'เบอร์โทร',       type: 'tel',  ph: '08xxxxxxxx' },
-              { key: 'address', label: 'ที่อยู่จัดส่ง *', type: 'text', ph: 'บ้านเลขที่ / ซอย / ตึก' },
-              { key: 'note',    label: 'โน้ต',            type: 'text', ph: 'หมายเหตุเพิ่มเติม' },
+              { key: 'name',    label: 'ชื่อ',         required: true,  type: 'text', ph: 'ชื่อลูกค้า' },
+              { key: 'phone',   label: 'เบอร์โทร',     required: false, type: 'tel',  ph: '08xxxxxxxx' },
+              { key: 'address', label: 'ที่อยู่จัดส่ง', required: true,  type: 'text', ph: 'บ้านเลขที่ / ซอย / ตึก' },
+              { key: 'note',    label: 'โน้ต',          required: false, type: 'text', ph: 'หมายเหตุเพิ่มเติม' },
             ].map(field => (
               <div key={field.key}>
-                <label className="block text-[.72rem] font-semibold text-[#7C6F9F] mb-1">{field.label}</label>
+                <label className="flex items-center gap-1.5 text-[.72rem] font-semibold text-[#7C6F9F] mb-1">
+                  {field.label}
+                  {field.required !== undefined && (
+                    <span className={`text-[.65rem] font-medium px-1.5 py-0.5 rounded-full ${field.required ? 'bg-violet-100 text-violet-600' : 'bg-gray-100 text-gray-400'}`}>
+                      {field.required ? 'จำเป็น' : 'ไม่จำเป็น'}
+                    </span>
+                  )}
+                </label>
                 <input
                   type={field.type}
                   value={s[field.key as keyof State] as string}

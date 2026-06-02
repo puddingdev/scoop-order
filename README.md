@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍨 Scoop by Loki — Customer Ordering Website
 
-## Getting Started
+> Part of the **Scoop by Loki Ecosystem** — an end-to-end ice cream delivery system built for a small Thai dessert shop.
 
-First, run the development server:
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8?logo=tailwindcss)](https://tailwindcss.com)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black?logo=vercel)](https://vercel.com)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## What is this?
+
+A **mobile-first customer ordering website** that replaces the manual Messenger-based order flow.
+
+**Before:** Customer → Facebook Post → DM the shop → back-and-forth asking flavor / size / address → shop manually types everything  
+**After:** Customer → Website → select items + fill address → submit → order lands in [IcePOS](https://github.com/puddingdev/icepos) automatically
+
+---
+
+## Ecosystem
+
+This repo is one piece of a two-app system that shares a single Google Sheets database via Google Apps Script.
+
+| App | Repo | Role |
+|-----|------|------|
+| **Customer Website** | [`scoop-order`](https://github.com/puddingdev/scoop-order) ← you are here | Mobile ordering, order tracking |
+| **Admin Panel** | [`icepos`](https://github.com/puddingdev/icepos) | Order management, PromptPay QR generation, cost/profit tracking |
+
+```
+Customer Website (Next.js)
+        │
+        │  POST order
+        ▼
+Google Apps Script (GAS Web App)
+        │
+        │  append / read rows
+        ▼
+Google Sheets  ◄──────────────────── IcePOS Admin Panel (Vanilla JS)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **3-step order form** — flavor selection, size & toppings, customer info
+- **Auto price calculation** — size + extra toppings + delivery zone fee
+- **Order tracking page** — `/order/[orderNo]` polls live status from GAS
+- **Mobile-first UI** — designed for Thai smartphone users
+- **No login required** — frictionless checkout experience
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Order Flow
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+Customer lands on website
+  → Selects flavor (Chocolate / Cookies & Cream / Vanilla)
+  → Picks size  M (50฿ · 5 scoops)  or  L (75฿ · 8 scoops + 1 free topping)
+  → Adds toppings (Oreo, Brownie, Cornflakes, Ovaltine, Choc Sauce · +5฿ each)
+  → Chooses delivery zone (5฿ / 15฿ / 20฿)
+  → Fills name · phone · address
+  → Submits → Order #SL000001 created
+  → Redirected to tracking page
+  → Shop receives order in IcePOS → confirms → sends PromptPay QR via Messenger
+  → Customer pays → shop updates status → delivers
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Layer | Choice |
+|-------|--------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 |
+| Backend | Google Apps Script Web App |
+| Database | Google Sheets |
+| Hosting | Vercel |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Project Structure
+
+```
+src/
+  lib/
+    config.ts          — menu data, pricing, delivery zones, GAS_URL
+    api.ts             — createOrder(), getOrderByNo(), OrderData type
+  app/
+    page.tsx           — Home page
+    order/page.tsx     — Multi-step order form
+    order/[orderNo]/   — Live order tracking
+    layout.tsx         — Root layout
+    globals.css        — Tailwind + dark theme
+public/
+  logo.png             — Scoop by Loki logo
+```
+
+---
+
+## Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+> **Note on CORS:** The GAS backend requires `Content-Type: text/plain;charset=utf-8` on all POST requests. Using `application/json` triggers a preflight OPTIONS request that GAS does not support.
+
+---
+
+## Related
+
+- [IcePOS — Admin Panel](https://github.com/puddingdev/icepos) — The shop-side counterpart. Manages all orders from this website plus walk-in POS, cost tracking, and PromptPay QR generation.
